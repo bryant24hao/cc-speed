@@ -1,6 +1,6 @@
 {
   "name": "cc-speed",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Analyze Claude Code token output speed from local JSONL logs",
   "type": "module",
   "bin": {
@@ -15,6 +15,7 @@
     "build": "tsup && chmod +x dist/index.js",
     "dev": "tsup --watch",
     "test": "vitest run",
+    "postinstall": "node ./dist/postinstall.js",
     "prepublishOnly": "pnpm build"
   },
   "keywords": [
