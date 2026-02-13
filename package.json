@@ -1,6 +1,6 @@
 {
   "name": "cc-speed",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Analyze Claude Code token output speed from local JSONL logs",
   "type": "module",
   "bin": {
@@ -12,7 +12,7 @@
     "install-skill.sh"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && chmod +x dist/index.js",
     "dev": "tsup --watch",
     "test": "vitest run",
     "prepublishOnly": "pnpm build"
@@ -40,6 +40,8 @@
     "vitest": "^3.0.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
