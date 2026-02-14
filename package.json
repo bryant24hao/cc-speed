@@ -1,6 +1,6 @@
 {
   "name": "cc-speed",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Analyze Claude Code token output speed from local JSONL logs",
   "type": "module",
   "bin": {

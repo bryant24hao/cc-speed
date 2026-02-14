@@ -17,7 +17,13 @@ interface JsonlMessage {
   message?: {
     model?: string;
     usage?: { output_tokens?: number };
+    content?: Array<{ type?: string }>;
   };
+}
+
+function isToolResult(msg: JsonlMessage): boolean {
+  const content = msg.message?.content;
+  return Array.isArray(content) && content[0]?.type === "tool_result";
 }
 
 function getAllJsonlFiles(dir: string, cutoffMs: number): string[] {
@@ -91,7 +97,7 @@ export function collectSpeedData(days: number): SpeedDataPoint[] {
       const outputTokens = msg.message.usage.output_tokens;
       const model = normalizeModel(msg);
 
-      // Find preceding user message timestamp
+      // Find preceding user message (human input or tool_result)
       let userTs: Date | null = null;
       for (let j = i - 1; j >= 0; j--) {
         if (messages[j].type === "user" && messages[j].timestamp) {
@@ -102,7 +108,9 @@ export function collectSpeedData(days: number): SpeedDataPoint[] {
 
       if (userTs && outputTokens > 10) {
         const durationSec = (ts.getTime() - userTs.getTime()) / 1000;
-        if (durationSec > 0.5 && durationSec < 300) {
+        const tokensPerSec = outputTokens / durationSec;
+        // Filter: duration 0.5~300s AND speed <= 200 tok/s (no model exceeds this)
+        if (durationSec > 0.5 && durationSec < 300 && tokensPerSec <= 200) {
           dataPoints.push({
             timestamp: ts.toISOString(),
             outputTokens,
